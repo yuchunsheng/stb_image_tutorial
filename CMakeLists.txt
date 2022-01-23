@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(stb_tutorial VERSION 0.1.0)
+
+
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
+
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(PROJECT_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
+set(PROJECT_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
+set(PROJECT_SRC_DIR ${PROJECT_SOURCE_DIR}/src)
+
+include_directories(${PROJECT_INCLUDE_DIR})
+
+
+add_subdirectory(src)
