@@ -35,7 +35,7 @@ int main() {
 
     string outputPath = "/home/ycsheng/temp/output.jpg";
     // Write pictures
-    stbi_write_jpg(outputPath.c_str(), ow, oh, n, odata, 0);
+    stbi_write_jpg(outputPath.c_str(), ow, oh, n, odata, 90);
 
     stbi_image_free(idata);
     stbi_image_free(odata);
