@@ -23,8 +23,8 @@ int main() {
 
     int ow = iw / 2;
     int oh = ih / 2;
-    // auto *odata = (unsigned char *) malloc(ow * oh * n);
-    auto* odata = new unsigned char[ow*oh*n];
+    auto *odata = (unsigned char *) malloc(ow * oh * n);
+    // auto* odata = new unsigned char[ow*oh*n];
     
     // Change picture size
     stbir_resize(idata, iw, ih, 0, odata, ow, oh, 0, STBIR_TYPE_UINT8, n, STBIR_ALPHA_CHANNEL_NONE, 0,
