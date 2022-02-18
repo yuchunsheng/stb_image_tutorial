@@ -15,7 +15,7 @@
 using namespace std;
 
 void std_image_test(){
-    std::cout << "Hello, STB_Image" << std::endl;
+    std::cout << "Hello, STB_Image library" << std::endl;
 
     std::string inputPath = "/home/ycsheng/disk220G/play_ground/16329372_opencv.jpg";
     int iw, ih, n;

@@ -1,5 +1,6 @@
 
 add_library(std_image STATIC "")
+
 target_sources(std_image
   PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/std_image_tutorial.cpp
