@@ -13,6 +13,7 @@ endif()
 
 add_subdirectory(std_image_tutorial)
 add_subdirectory(audio_tutorial)
+add_subdirectory(audio_fft)
 
 set(SOURCE_FILES main.cpp)
 
@@ -25,5 +26,5 @@ target_include_directories(main
   )
 
 
-target_link_libraries(main std_image audio_test)
+target_link_libraries(main std_image audio_test audio_fft)
 install(TARGETS main DESTINATION ${PROJECT_BIN_DIR})

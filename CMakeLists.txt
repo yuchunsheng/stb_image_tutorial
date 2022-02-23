@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(stb_tutorial VERSION 0.1.0 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
@@ -9,7 +11,11 @@ set(PROJECT_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
 set(PROJECT_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 set(PROJECT_SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 
-include_directories(${PROJECT_INCLUDE_DIR})
+include_directories(${PROJECT_INCLUDE_DIR} 
+    ${PROJECT_INCLUDE_DIR}/KickFFT
+    ${PROJECT_INCLUDE_DIR}/std_image
+    ${PROJECT_INCLUDE_DIR}/pocketfft
+)
 
 
 add_subdirectory(src)
