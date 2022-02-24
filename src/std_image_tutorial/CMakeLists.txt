@@ -13,4 +13,6 @@ target_include_directories(std_image
   PUBLIC
     ${CMAKE_CURRENT_LIST_DIR} 
     ${PROJECT_INCLUDE_DIR}
+    ${PROJECT_INCLUDE_DIR}/std_image
+
   )

@@ -32,7 +32,9 @@ int main() {
     // generate_wave_sound();
     // generate_sin_wave();
     // check_endian();
-    kissfft_demo();
+    // kissfft_demo();
+    // kickfft_demo();
+    pocketfft_demo();
     return 0;
 }
 

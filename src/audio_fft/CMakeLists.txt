@@ -15,7 +15,7 @@ target_sources(audio_fft
         ${CMAKE_CURRENT_LIST_DIR}/_kiss_fft_guts.h
         ${CMAKE_CURRENT_LIST_DIR}/kiss_fft_log.h
 )
-# target_link_libraries(audio_fft kiss_fft kiss_fftr)
+target_link_libraries(audio_fft pthread)
 target_include_directories(audio_fft 
     PUBLIC 
         ${CMAKE_CURRENT_LIST_DIR}
