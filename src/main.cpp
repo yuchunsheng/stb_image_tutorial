@@ -9,6 +9,7 @@
 #include "std_image_tutorial.hpp"
 #include "audio_read.hpp"
 #include "fft_demo.h"
+#include "jpeg_decode.h"
 
 using namespace std;
 void check_endian(){
@@ -19,10 +20,12 @@ void check_endian(){
     std::cout<<std::hex << (int)p[0] << std::endl;
 }
 
+
 int main() {
     // std_image_test();
     std::cout << "Hello From Main with switch" << std::endl;
-    
+    tjpg_test();
+    // 
     // std::vector<char> result = read_bytes_from_file("/home/ycsheng/disk3T/temp/audio_raw");
     // std::cout << result.size() << std::endl;
 
@@ -34,7 +37,7 @@ int main() {
     // check_endian();
     // kissfft_demo();
     // kickfft_demo();
-    pocketfft_demo();
+    // pocketfft_demo();
     return 0;
 }
 

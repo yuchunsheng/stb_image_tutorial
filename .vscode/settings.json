@@ -40,6 +40,14 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "complex": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "ctime": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "ratio": "cpp",
+        "mutex": "cpp",
+        "thread": "cpp"
     }
 }
