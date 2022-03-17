@@ -18,21 +18,32 @@ uint16_t jd_input(JDEC* jdec, uint8_t* buf, uint16_t len)
     if (buf) {
       // Read into buffer, pointer moved as well
       fin.read(reinterpret_cast<char *>(buf), len);
-      std::cout << "current position in jpeg =" << fin.tellg() << std::endl;
+    //   std::cout << "current position in jpeg =" << fin.tellg() << std::endl;
     }
     else {
-        std::cout << "buf is null" << std::endl;
+        // std::cout << "buf is null" << std::endl;
         // Buffer is null, so skip data by moving pointer
         int offset = (len + static_cast<int>(fin.tellg()));
         fin.seekg(offset, std::ios_base::beg);
     } 
-    std::cout << "len = " << len << std::endl;
+    // std::cout << "len = " << len << std::endl;
     return len;
 }
 
-int jd_output(JDEC* jdec, void* bitmap, JRECT* jrect)
+uint16_t jd_output(JDEC* jdec, void* bitmap, JRECT* jrect)
 {
-    return 0;
+    std::cout << "inside jd_output !!! " << std::endl;
+    int16_t  x = jrect->left ;
+    int16_t  y = jrect->top  ;
+    uint16_t w = jrect->right  + 1 - jrect->left;
+    uint16_t h = jrect->bottom + 1 - jrect->top;
+    std::cout << "jpeg length =  " << w << std::endl;
+    std::cout << "jpeg width= " << h << std::endl;
+
+    std::cout << "jpeg x= " << x << std::endl;
+    std::cout << "jpeg y= " << y << std::endl;
+
+    return 1;
 }
 
 
@@ -49,14 +60,14 @@ void tjpg_test(){
     JDEC decoder;
     JRESULT result;
 
-    // sdcard_init();
-
-    // fp = fopen("/sdcard/image.jpg", "rb");
+    int jpg_scale = 1;
 
     result = jd_prepare(&decoder, jd_input, workspace, TJPGD_WORKSPACE_SIZE, 0);
     if (JDR_OK == result) {
         // jd_decomp(&decoder, tjpgd_data_writer, 0);
-        std::cout << "OK" << std::endl;
+        result = jd_decomp(&decoder, jd_output, jpg_scale);
+    
+        std::cout << "result = " << result << std::endl;
     };
     fin.close();
     // fclose(fp);
