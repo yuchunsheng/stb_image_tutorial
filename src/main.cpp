@@ -9,7 +9,7 @@
 #include "std_image_tutorial.hpp"
 #include "audio_read.hpp"
 #include "fft_demo.h"
-#include "jpeg_decode.h"
+#include "jpeg_decode_grayscale.h"
 
 using namespace std;
 void check_endian(){
