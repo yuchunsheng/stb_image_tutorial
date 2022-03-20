@@ -91,6 +91,61 @@ uint16_t jd_output_new(
     return 1;
 }
 
+uint16_t jd_output_grayscale(
+    JDEC* jd,       /* Decompression object */
+    void* bitmap,   /* Bitmap data to be output */
+    JRECT* rect     /* Rectangular region of output image */)
+{
+    // std::cout << "inside jd_output !!! " << std::endl;
+    IODEV *dev = (IODEV*)jd->device;   /* Session identifier (5th argument of jd_prepare function) */
+    uint8_t *src, *dst;
+    uint16_t x, y, bws;
+    unsigned int bwd;
+    
+    int start_x = (320 -224)/2;
+    int end_x = start_x + 224;
+
+    int start_y = (240-224)/2 ;
+    int end_y = start_y + 224 ;
+
+    uint16_t current_row = 0;
+    uint16_t current_col = 0;
+
+   
+    /* Copy the output image rectanglar to the frame buffer */
+    src = (uint8_t*)bitmap;
+    dst = dev->fbuf ;  /* Left-top of destination rectangular */
+    
+    uint8_t r, g, b;
+
+    int current_width = rect->right - rect->left + 1;
+
+    for (y = rect->top; y <= rect->bottom ; y++) {
+        //if y in the center cropping area
+        current_col = 0;
+        for(x=rect->left; x <= rect->right ; x++){
+            if((x>start_x) && (x <end_x) && (y > start_y) && (y<end_y)){
+
+                int current_index = 3*(current_row*current_width  + current_col);
+
+                r = *(src + current_index);
+                g = *(src + current_index + 1);
+                b = *(src + current_index +2);
+
+                int current_out_index = ((y-start_y)*224 + (x-start_x));
+                float gray_value = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
+                *(dst + current_out_index) = (gray_value -= 128); 
+
+            }
+            current_col ++;
+        }
+        current_row ++;      
+    }
+    current_row = 0;
+
+    return 1;
+}
+
 
 
 uint16_t jd_output(
@@ -147,11 +202,8 @@ uint16_t jd_output(
                 g = *(src + current_index + 1);
                 b = *(src + current_index +2);
 
-                // std::cout << "r = " << (int)r << " b=" << (int)b << "g= " << (int)g << std::endl;
-                // float gray_value = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
-                // *(dst + (y-start_y)*224 + (x-start_x)) = (gray_value -= 128); 
-                int current_out_index = 3* ((y-start_y)*224 + (x-start_x));
-
+                int current_out_index = ((y-start_y)*224 + (x-start_x));
+                
                 *(dst + current_out_index) = r;
                 *(dst + current_out_index + 1) = g;
                 *(dst + current_out_index + 2) = b;
@@ -194,13 +246,15 @@ void tjpg_test(){
         /* Initialize output device */
         // devid.fbuf = (uint8_t*)malloc(N_BPP * decoder.width * decoder.height);; /* Create frame buffer for output image */
         // devid.wfbuf = decoder.width;
-        devid.fbuf = (uint8_t*)malloc( 224 * 224 * 3);; /* Create frame buffer for output image */
+        devid.fbuf = (uint8_t*)malloc( 224 * 224 * 1);; /* Create frame buffer for output image */
+        // devid.fbuf = (uint8_t*)malloc( 224 * 224 * 3);; /* Create frame buffer for output image */
         // devid.fbuf = (uint8_t*)malloc( 320 * 240 * 3);; /* Create frame buffer for output image */
         devid.wfbuf = decoder.width;
 
         // result = jd_decomp(&decoder, jd_output_new, jpg_scale);
-        result = jd_decomp(&decoder, jd_output, jpg_scale);
-    
+        // result = jd_decomp(&decoder, jd_output, jpg_scale);
+        result = jd_decomp(&decoder, jd_output_grayscale, jpg_scale);
+        
         if (result == JDR_OK) {
             /* Decompression succeeded. You have the decompressed image in the frame buffer here. */
             std::cout <<("Decompression succeeded.") << std::endl;
@@ -208,7 +262,7 @@ void tjpg_test(){
             // Write pictures
             std::string outputPath = "/home/ycsheng/temp/output.bmp";
             // int res = stbi_write_bmp(outputPath.c_str(), 320, 240, 3, devid.fbuf);
-            int res = stbi_write_bmp(outputPath.c_str(), 224, 224, 3, devid.fbuf);
+            int res = stbi_write_bmp(outputPath.c_str(), 224, 224, 1, devid.fbuf);
             std::cout << "stb_image result = " << res << std::endl;
 
         } else {
