@@ -11,14 +11,16 @@
 #include "stb_image_resize.h"
 
 
-/* Bytes per pixel of image output */
-#define N_BPP 1               //grayscale
+/* Bytes per pixel of image input */
+#define N_BPP 3               //color
 /* Session identifier for input/output functions (name, members and usage are as user defined) */
 typedef struct {
     std::ifstream *fp;               /* Input stream */
     unsigned int file_size;
     uint8_t *fbuf;          /* Output frame buffer */
     unsigned int wfbuf;     /* Width of the frame buffer [pix] */
+    int crop_width;
+    int crop_height;
 } IODEV;
 
 uint16_t jd_input(    /* Returns number of bytes read (zero on error) */
@@ -102,11 +104,11 @@ uint16_t jd_output_grayscale(
     uint16_t x, y, bws;
     unsigned int bwd;
     
-    int start_x = (320 -224)/2;
-    int end_x = start_x + 224;
+    int start_x = (jd->width -dev->crop_width)/2;
+    int end_x = start_x + dev->crop_width;
 
-    int start_y = (240-224)/2 ;
-    int end_y = start_y + 224 ;
+    int start_y = (jd->height - dev->crop_height)/2 ;
+    int end_y = start_y + dev->crop_height ;
 
     uint16_t current_row = 0;
     uint16_t current_col = 0;
@@ -126,15 +128,20 @@ uint16_t jd_output_grayscale(
         for(x=rect->left; x <= rect->right ; x++){
             if((x>start_x) && (x <end_x) && (y > start_y) && (y<end_y)){
 
-                int current_index = 3*(current_row*current_width  + current_col);
+                int current_index = N_BPP * (current_row*current_width  + current_col);
 
                 r = *(src + current_index);
                 g = *(src + current_index + 1);
                 b = *(src + current_index +2);
 
-                int current_out_index = ((y-start_y)*224 + (x-start_x));
+                int current_out_index = ((y-start_y)* dev->crop_width + (x-start_x));
+                // Convert to grayscale by calculating luminance
+                // See https://en.wikipedia.org/wiki/Grayscale for magic numbers
                 float gray_value = (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
-                *(dst + current_out_index) = (gray_value -= 128); 
+                // Convert to signed 8-bit integer by subtracting 128.
+                // *(dst + current_out_index) = (gray_value -= 128);
+                // gray_value -= 128;
+                *(dst + current_out_index) = static_cast<uint8_t>(gray_value); 
 
             }
             current_col ++;
@@ -237,6 +244,9 @@ void tjpg_test(){
     devid.file_size = fin.tellg();
     fin.seekg(0, std::ios::beg);
 
+    devid.crop_width = 224;
+    devid.crop_height = 224;
+
     result = jd_prepare(&decoder, jd_input, workspace, TJPGD_WORKSPACE_SIZE, &devid);
     if (JDR_OK == result) {
         std::cout <<"Image size is " << decoder.width << ", " << decoder.height << std::endl;
@@ -246,7 +256,7 @@ void tjpg_test(){
         /* Initialize output device */
         // devid.fbuf = (uint8_t*)malloc(N_BPP * decoder.width * decoder.height);; /* Create frame buffer for output image */
         // devid.wfbuf = decoder.width;
-        devid.fbuf = (uint8_t*)malloc( 224 * 224 * 1);; /* Create frame buffer for output image */
+        devid.fbuf = (uint8_t*)malloc( devid.crop_width * devid.crop_height * 1);; /* Create frame buffer for output image */
         // devid.fbuf = (uint8_t*)malloc( 224 * 224 * 3);; /* Create frame buffer for output image */
         // devid.fbuf = (uint8_t*)malloc( 320 * 240 * 3);; /* Create frame buffer for output image */
         devid.wfbuf = decoder.width;
